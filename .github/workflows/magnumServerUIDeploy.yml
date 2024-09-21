@@ -37,7 +37,8 @@ jobs:
           cd wonderWhy/FlutterFlow/magnum
           flutter clean
           flutter pub get
-          flutter build web --base-href "/flutterflow/"
+          sed -i '' 's|<base href="/">|<base href="/flutterflow/">|' web/index.html
+          flutter build web
 
       - name: Upload Web Build and UI Build as artifact
         uses: actions/upload-artifact@v3
