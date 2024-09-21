@@ -34,17 +34,17 @@ jobs:
       - name: Set up Flutter SDK
         uses: subosito/flutter-action@v2
       - run: |
-          cd wonderWhy/FlutterFlow/magnum
+          cd wonderWhy/flutterFlow/magnum
           flutter clean
           flutter pub get
-          sed -i '' 's|<base href="/">|<base href="/flutterflow/">|' web/index.html
+          sed -i '' 's|<base href="/">|<base href="/flutterFlow/">|' web/index.html
           flutter build web
 
       - name: Upload Web Build and UI Build as artifact
         uses: actions/upload-artifact@v3
         with:
           name: ff-web-app
-          path: wonderWhy/FlutterFlow/magnum/build/web
+          path: wonderWhy/flutterFlow/magnum/build/web
 
       - name: Upload Web Build and UI Build as artifact
         uses: actions/upload-artifact@v3
@@ -72,7 +72,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ff-web-app
-          path: wonderWhy/FlutterFlow/magnum/build/web
+          path: wonderWhy/flutterFlow/magnum/build/web
 
       - name: Set Variables
         run: echo "ELASTIC_IP=ec2-user@52.4.164.231" >> $GITHUB_ENV
@@ -118,7 +118,7 @@ jobs:
       - name: Copy Dist Folder
         run: | 
           rsync -avz -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem' /home/runner/work/wondermovedeploy/wondermovedeploy/wonderWhy/web/dist/*  ${{ env.ELASTIC_IP }}:~/wonderWhy/nginx/html/
-          rsync -avz -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem' /home/runner/work/wondermovedeploy/wondermovedeploy/wonderWhy/FlutterFlow/magnum/build/web/*  ${{ env.ELASTIC_IP }}:~/wonderWhy/nginx/flutterflow/
+          rsync -avz -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem' /home/runner/work/wondermovedeploy/wondermovedeploy/wonderWhy/flutterFlow/magnum/build/web/*  ${{ env.ELASTIC_IP }}:~/wonderWhy/nginx/flutterflow/
 
       - name: Remove Added Security Group Rule
         run: |
