@@ -113,12 +113,12 @@ jobs:
           
       - name: Clone Repository to EC2
         run: |
-          rsync -avz -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem' /home/runner/work/wondermovedeploy/wondermovedeploy/wonderWhy ${{ env.ELASTIC_IP }}:~/
+          rsync -avz -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem' /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/wonderWhy ${{ env.ELASTIC_IP }}:~/
 
       - name: Copy Dist Folder
         run: | 
-          rsync -avz -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem' /home/runner/work/wondermovedeploy/wondermovedeploy/wonderWhy/web/dist/*  ${{ env.ELASTIC_IP }}:~/wonderWhy/nginx/html/
-          rsync -avz -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem' /home/runner/work/wondermovedeploy/wondermovedeploy/wonderWhy/flutterFlow/magnum/build/web/*  ${{ env.ELASTIC_IP }}:~/wonderWhy/nginx/flutterflow/
+          rsync -avz -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem' /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/wonderWhy/web/dist/*  ${{ env.ELASTIC_IP }}:~/wonderWhy/nginx/html/
+          rsync -avz -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem' /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/wonderWhy/flutterFlow/magnum/build/web/*  ${{ env.ELASTIC_IP }}:~/wonderWhy/nginx/flutterflow/
 
       - name: Remove Added Security Group Rule
         run: |
