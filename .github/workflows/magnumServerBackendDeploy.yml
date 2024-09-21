@@ -1,0 +1,124 @@
+name: Magnum server Backend
+run-name: ${{ github.actor }} - ${{ github.event.head_commit.message }} commit is running
+on:
+  workflow_dispatch:
+
+jobs:
+  BackendLintAndTest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+        with:
+          repository: WonderWhyDev/wonderWhy
+          path: wonderWhy
+          token: ${{ secrets.REPO_READ_TOKEN }}
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'yarn'
+          cache-dependency-path: '**/yarn.lock'
+      - run: |
+          cd wonderWhy
+          yarn install
+          yarn b build
+      - name: Upload Dist
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist-folder-backend
+          path: wonderWhy/backend/dist/
+
+  AutoDeployment:
+    runs-on: ubuntu-latest
+    needs: [BackendLintAndTest]
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+        with:
+          repository: WonderWhyDev/wonderWhy
+          path: wonderWhy
+          token: ${{ secrets.REPO_READ_TOKEN }}
+      - name: Download dist folder
+        uses: actions/download-artifact@v3
+        with:
+          name: dist-folder-backend
+          path: wonderWhy/backend/dist/        
+      - name: Get Runner IP
+        run: |
+          IP_ADDRESS=$(curl -s https://api.ipify.org)
+          echo "IP_ADDRESS=$IP_ADDRESS" >> $GITHUB_ENV
+
+      - name: Set Variables
+        run: echo "ELASTIC_IP=ec2-user@52.4.164.231" >> $GITHUB_ENV
+
+      - name: Configure AWS CLI
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.MAGNUM_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.MAGNUM_AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Update Security Group
+        run: |
+          SECURITY_GROUP_ID="sg-0109e0cf4e941e2f5" 
+          IP_ADDRESS=${{ env.IP_ADDRESS }}
+          aws ec2 authorize-security-group-ingress \
+            --group-id $SECURITY_GROUP_ID \
+            --protocol tcp \
+            --port 22 \
+            --cidr ${IP_ADDRESS}/32
+
+      - name: Setup SSH Key
+        env:
+          SSH_PRIVATE_KEY_FOR_EC2: ${{ secrets.SSH_PRIVATE_KEY_FOR_EC2 }}
+        run: |
+            echo "$SSH_PRIVATE_KEY_FOR_EC2" > SSH_PRIVATE_KEY_FOR_EC2.pem
+            chmod 600 SSH_PRIVATE_KEY_FOR_EC2.pem
+
+      - name: Add remote host to known_hosts # Add this to Startup Scripts on Terraform
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H 52.4.164.231 >> ~/.ssh/known_hosts
+
+      - name: Clone Repository
+        run: |
+          rsync -avz -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem -o StrictHostKeyChecking=no' /home/runner/work/deploy/deploy/wonderWhy ${{ env.ELASTIC_IP }}:~/
+
+      - name: Clone Dist Folder
+        run: rsync -avz -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem' /home/runner/work/deploy/deploy/wonderWhy/backend/dist/*  ${{ env.ELASTIC_IP }}:~/wonderWhy/backend/dist/
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'yarn'
+          cache-dependency-path: '**/yarn.lock'  
+
+      - name: Start Docker Container
+        env:
+          MAGNUM_CLIENT_ID: ${{ secrets.MAGNUM_CLIENT_ID }}
+          MAGNUM_CLIENT_SECRET: ${{ secrets.MAGNUM_CLIENT_SECRET }}
+        run : |
+          ssh -t -i SSH_PRIVATE_KEY_FOR_EC2.pem ${{ env.ELASTIC_IP }}  << EOF
+            set -e
+            sudo chmod 666 /var/run/docker.sock
+            cd wonderWhy
+            sed -i '/^export CLIENT_ID=/d' ~/.bashrc
+            echo 'export CLIENT_ID=$MAGNUM_CLIENT_ID' >> ~/.bashrc
+            sed -i '/^export CLIENT_SECRET=/d' ~/.bashrc
+            echo 'export CLIENT_SECRET=$MAGNUM_CLIENT_SECRET' >> ~/.bashrc
+            sed -i '/^export ZITADEL_AUTHORITY=/d' ~/.bashrc
+            echo 'export ZITADEL_AUTHORITY="https://auth.magnum.wondermove.in"' >> ~/.bashrc
+            source /home/ec2-user/.bashrc
+            docker-compose stop backend 
+            docker-compose up setup -d
+            docker-compose up backend -d
+          EOF
+        
+      - name: Remove Added Security Group Rule
+        run: |
+          SECURITY_GROUP_ID="sg-0109e0cf4e941e2f5" 
+          aws ec2 revoke-security-group-ingress \
+            --group-id $SECURITY_GROUP_ID \
+            --protocol tcp \
+            --port 22 \
+            --cidr ${IP_ADDRESS}/32

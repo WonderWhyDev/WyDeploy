@@ -1,0 +1,53 @@
+name: Flutter Flow - Build APK
+run-name: ${{ github.actor }} - ${{ github.event.head_commit.message }} commit is running
+on:
+  workflow_dispatch:
+
+jobs:
+  FlutterFlow:
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+        with:
+          repository: WonderWhyDev/wonderWhy
+          path: wonderWhy
+          token: ${{ secrets.REPO_READ_TOKEN }}
+          
+      - name: Set up Flutter SDK
+        uses: subosito/flutter-action@v2
+        
+      - run: |
+          cd wonderWhy/FlutterFlow/magnum
+          echo "TIME=$(date +%s)" >> $GITHUB_ENV
+          flutter clean
+          flutter pub get
+          flutter build apk --release
+
+      - name: Upload APK as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-release
+          path: wonderWhy/FlutterFlow/magnum/build/app/outputs/flutter-apk/app-release.apk
+  
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: v0.0.${{ env.TIME }}
+          release_name: Release v0.0.${{ env.TIME }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
+      - name: Upload APK to GitHub Release
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: wonderWhy/FlutterFlow/magnum/build/app/outputs/flutter-apk/app-release.apk
+          asset_name: WonderMove.apk
+          asset_content_type: application/vnd.android.package-archive
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
