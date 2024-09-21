@@ -82,6 +82,7 @@ jobs:
 
       - name: Clone Repository
         run: |
+          ls
           rsync -avz -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem -o StrictHostKeyChecking=no' /home/runner/work/wondermovedeploy/wondermovedeploy/wonderWhy ${{ env.ELASTIC_IP }}:~/
 
       - name: Clone Dist Folder
