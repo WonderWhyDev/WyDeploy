@@ -82,11 +82,10 @@ jobs:
 
       - name: Clone Repository
         run: |
-          ls
-          rsync -avz -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem -o StrictHostKeyChecking=no' /home/runner/work/wondermovedeploy/wondermovedeploy/wonderWhy ${{ env.ELASTIC_IP }}:~/
+          rsync -avz -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem -o StrictHostKeyChecking=no' wonderWhy ${{ env.ELASTIC_IP }}:~/
 
       - name: Clone Dist Folder
-        run: rsync -avz -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem' /home/runner/work/wondermovedeploy/wondermovedeploy/wonderWhy/backend/dist/*  ${{ env.ELASTIC_IP }}:~/wonderWhy/backend/dist/
+        run: rsync -avz -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem' wonderWhy/backend/dist/*  ${{ env.ELASTIC_IP }}:~/wonderWhy/backend/dist/
 
       - uses: actions/setup-node@v3
         with:
