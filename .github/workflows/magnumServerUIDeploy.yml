@@ -37,7 +37,7 @@ jobs:
           cd wonderWhy/flutterFlow/magnum
           flutter clean
           flutter pub get
-          sed -i '' 's|<base href="/">|<base href="/flutterFlow/">|' web/index.html
+          man sed
           flutter build web
 
       - name: Upload Web Build and UI Build as artifact
