@@ -52,7 +52,7 @@ jobs:
 
       - name: Clone Repository to EC2
         run: |
-          rsync -avz -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem' -o StrictHostKeyChecking=no' wonderWhy ${{ env.ELASTIC_IP }}:~/
+          rsync -avz -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem -o StrictHostKeyChecking=no' wonderWhy ${{ env.ELASTIC_IP }}:~/
 
       - name: Clone Secrets to EC2
         run: |
