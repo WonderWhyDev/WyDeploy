@@ -47,7 +47,7 @@ jobs:
 
   UI_Deployment:
     runs-on: ubuntu-latest
-    needs: [UIAndFlutterFlowWebBuild]
+    needs: [UIWebBuild]
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
