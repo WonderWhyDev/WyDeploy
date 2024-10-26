@@ -1,10 +1,10 @@
-name: Magnum server UI
+name: Magnum server Flutter Flow
 run-name: ${{ github.actor }} - ${{ github.event.head_commit.message }} commit is running
 on:
   workflow_dispatch:
 
 jobs:
-  UIWebBuild:
+  FlutterFlowWebBuild:
     runs-on: ubuntu-latest
     steps:
       - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
@@ -16,22 +16,15 @@ jobs:
           path: wonderWhy
           token: ${{ secrets.REPO_READ_TOKEN }}
       - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-          cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
-      - run: |
-          cd wonderWhy
-          yarn install
-          cd web
-          rm -rf .env
-          touch .env
-          echo "CLIENT_ID= ${{ secrets.MAGNUM_CLIENT_ID }} " >> .env
-          echo "CLIENT_SECRET= ${{ secrets.MAGNUM_CLIENT_SECRET }} " >> .env
-          yarn build
 
+      - name: Set up Flutter SDK
+        uses: subosito/flutter-action@v2
+      - run: |
+          cd wonderWhy/flutterFlow/magnum
+          sed -i 's|<base href="/">|<base href="/flutterflow/">|' web/index.html
+          flutter clean
+          flutter pub get         
+          flutter build web
 
       - name: Upload Web Build and UI Build as artifact
         uses: actions/upload-artifact@v3
@@ -39,13 +32,7 @@ jobs:
           name: ff-web-app
           path: wonderWhy/flutterFlow/magnum/build/web
 
-      - name: Upload Web Build and UI Build as artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: dist-folder-ui
-          path: wonderWhy/web/dist/
-
-  UI_Deployment:
+  FF_UI_Deployment:
     runs-on: ubuntu-latest
     needs: [UIAndFlutterFlowWebBuild]
     steps:
@@ -55,11 +42,12 @@ jobs:
           repository: WonderWhyDev/wonderWhy
           path: wonderWhy
           token: ${{ secrets.REPO_READ_TOKEN }}
+
       - name: Download dist folder
         uses: actions/download-artifact@v3
         with:
-          name: dist-folder-ui
-          path: wonderWhy/web/dist/
+          name: ff-web-app
+          path: wonderWhy/flutterFlow/magnum/build/web
 
       - name: Set Variables
         run: echo "ELASTIC_IP=ec2-user@52.4.164.231" >> $GITHUB_ENV
@@ -104,7 +92,7 @@ jobs:
 
       - name: Copy Dist Folder
         run: | 
-          rsync -avz -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem' /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/wonderWhy/web/dist/*  ${{ env.ELASTIC_IP }}:~/wonderWhy/nginx/html/
+          rsync -avz -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem' /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/wonderWhy/flutterFlow/magnum/build/web/*  ${{ env.ELASTIC_IP }}:~/wonderWhy/nginx/flutterflow/
 
       - name: Remove Added Security Group Rule
         run: |
