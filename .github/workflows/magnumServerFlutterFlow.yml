@@ -24,7 +24,9 @@ jobs:
           sed -i 's|<base href="/">|<base href="/flutterflow/">|' web/index.html
           flutter clean
           flutter pub get         
-          flutter build web
+          flutter build web --release --web-renderer html
+          cd build/web/
+          gzip index.html main.dart.js
 
       - name: Upload Web Build and UI Build as artifact
         uses: actions/upload-artifact@v3
