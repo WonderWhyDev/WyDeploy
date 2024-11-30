@@ -29,8 +29,6 @@ jobs:
           cd web
           rm -rf .env
           touch .env
-          echo "CLIENT_ID= ${{ secrets.MAGNUM_CLIENT_ID }} " >> .env
-          echo "CLIENT_SECRET= ${{ secrets.MAGNUM_CLIENT_SECRET }} " >> .env
           yarn build
           zip -r dist.zip dist
           rm -rf dist
@@ -41,4 +39,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: dist-folder-ui
-          path: wonderWhy/web/dist/
+          path: wonderWhy/web/dist.zip
