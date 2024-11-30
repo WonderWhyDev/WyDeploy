@@ -16,6 +16,7 @@ jobs:
           repository: WonderWhyDev/wonderWhy
           token: ${{ secrets.REPO_READ_TOKEN }}
           fetch-depth: 1
+          sparse-checkout: true
           sparse-checkout-cone-mode: true
           sparse-checkout-paths: "flutterFlow/magnum/"
 
