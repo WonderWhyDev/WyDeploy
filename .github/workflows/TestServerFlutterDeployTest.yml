@@ -31,15 +31,17 @@ jobs:
           ls
           cd wonderWhy/
           ls
-          cd wonderWhy/flutterFlow/magnum
+          cd flutterFlow/magnum
           sed -i 's|<base href="/">|<base href="/flutterflow/">|' web/index.html
           flutter clean
           flutter pub get         
           flutter build web --release --web-renderer html
-          cd build/web/
-          zip -r web.zip web
-          rm -rf web
-          ls
+          ls build/
+          ls build/web
+          zip -r build/web.zip build/web
+          rm -rf build/web 
+          ls build/
+          
 
       - name: Upload Web Build and UI Build as artifact
         uses: actions/upload-artifact@v3
