@@ -29,6 +29,8 @@ jobs:
       - run: |
           pwd
           ls
+          cd wonderWhy/
+          ls
           cd wonderWhy/flutterFlow/magnum
           sed -i 's|<base href="/">|<base href="/flutterflow/">|' web/index.html
           flutter clean
