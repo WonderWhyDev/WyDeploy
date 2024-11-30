@@ -1,0 +1,44 @@
+name: Test server UI 
+run-name: ${{ github.actor }} - ${{ github.event.head_commit.message }} commit is running
+on:
+  workflow_dispatch:
+
+jobs:
+  UIWebBuild:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+      - name: Check out repository code
+        uses: actions/checkout@v4
+        with:
+          repository: WonderWhyDev/wonderWhy
+          path: wonderWhy
+          token: ${{ secrets.REPO_READ_TOKEN }}
+      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+      
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'yarn'
+          cache-dependency-path: '**/yarn.lock'
+      - run: |
+          cd wonderWhy
+          ls
+          yarn install
+          cd web
+          rm -rf .env
+          touch .env
+          echo "CLIENT_ID= ${{ secrets.MAGNUM_CLIENT_ID }} " >> .env
+          echo "CLIENT_SECRET= ${{ secrets.MAGNUM_CLIENT_SECRET }} " >> .env
+          yarn build
+          zip -r dist.zip dist
+          rm -rf dist
+          ls 
+
+
+      - name: Upload Web Build and UI Build as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist-folder-ui
+          path: wonderWhy/web/dist/
