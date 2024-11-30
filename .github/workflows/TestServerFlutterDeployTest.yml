@@ -27,6 +27,8 @@ jobs:
         uses: subosito/flutter-action@v2
 
       - run: |
+          pwd
+          ls
           cd wonderWhy/flutterFlow/magnum
           sed -i 's|<base href="/">|<base href="/flutterflow/">|' web/index.html
           flutter clean
