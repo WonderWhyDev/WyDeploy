@@ -17,8 +17,8 @@ jobs:
           token: ${{ secrets.REPO_READ_TOKEN }}
           fetch-depth: 1
           sparse-checkout-cone-mode: true
-          sparse-checkout-paths:
-            flutterFlow/magnum/
+          sparse-checkout-paths: "flutterFlow/magnum/"
+
             
       - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
 
