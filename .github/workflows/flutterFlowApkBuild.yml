@@ -19,7 +19,7 @@ jobs:
         uses: subosito/flutter-action@v2
         
       - run: |
-          cd wonderWhy/flutterFlow/magnum
+          cd wonderWhy/flutterFlow/magnum_mobile
           echo "TIME=$(date +%s)" >> $GITHUB_ENV
           flutter clean
           flutter pub get
