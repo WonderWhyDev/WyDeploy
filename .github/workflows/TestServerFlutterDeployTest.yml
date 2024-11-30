@@ -10,14 +10,14 @@ jobs:
       - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
       - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
       
-      - name: Check out only flutterFlow folder
+      - name: Check out only flutterFlow web folder
         uses: actions/checkout@v4
         with:
           repository: WonderWhyDev/wonderWhy
           path: wonderWhy
           token: ${{ secrets.REPO_READ_TOKEN }}
           fetch-depth: 1
-          sparse-checkout-cone-mode: false
+          sparse-checkout-cone-mode: true
           sparse-checkout-paths: |
             flutterFlow/magnum/
             
@@ -28,19 +28,17 @@ jobs:
 
       - run: |
           pwd
-          ls
+          ls wonderWhy/
           cd wonderWhy/
-          ls
           cd flutterFlow/magnum
           sed -i 's|<base href="/">|<base href="/flutterflow/">|' web/index.html
           flutter clean
           flutter pub get         
           flutter build web --release --web-renderer html
-          ls build/
-          ls build/web
           zip -r build/web.zip build/web
           rm -rf build/web 
           ls build/
+          
           
 
       - name: Upload Web Build and UI Build as artifact
