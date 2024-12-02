@@ -9,27 +9,23 @@ jobs:
     steps:
       - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
       - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-      - name: Check out only  web folder
+      - name: Check out repository code
         uses: actions/checkout@v4
         with:
           repository: WonderWhyDev/wonderWhy
+          path: wonderWhy
           token: ${{ secrets.REPO_READ_TOKEN }}
-          fetch-depth: 1
-          sparse-checkout: 'web/'
-          sparse-checkout-cone-mode: false
-
-            
-      - run: echo "💡 The ${{ github.repository }}/flutterFlow/magnum folder has been cloned to the runner."
-  
+      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+      
       - uses: actions/setup-node@v3
         with:
           node-version: '18'
           cache: 'yarn'
           cache-dependency-path: '**/yarn.lock'
       - run: |
-          pwd
-          ls
+          cd wonderWhy
           yarn install
+          cd web
           rm -rf .env
           touch .env
           echo "CLIENT_ID= ${{ secrets.MAGNUM_CLIENT_ID }} " >> .env
@@ -40,8 +36,8 @@ jobs:
           ls 
 
 
-      - name: Upload Web Build  as artifact
+      - name: Upload Web Build and UI Build as artifact
         uses: actions/upload-artifact@v3
         with:
           name: dist-folder-ui
-          path: web/dist.zip
+          path: wonderWhy/web/dist.zip
