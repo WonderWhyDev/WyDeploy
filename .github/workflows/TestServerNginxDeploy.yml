@@ -108,7 +108,7 @@ jobs:
           echo "IP_ADDRESS=$IP_ADDRESS" >> $GITHUB_ENV
 
       - name: Set Variables
-        run: echo "ELASTIC_IP=ec2-user@54.161.136.144" >> $GITHUB_ENV
+        run: echo "ELASTIC_IP=ec2-user@3.227.166.26" >> $GITHUB_ENV
 
       - name: Configure AWS CLI
         uses: aws-actions/configure-aws-credentials@v2
@@ -119,7 +119,7 @@ jobs:
 
       - name: Update Security Group
         run: |
-          SECURITY_GROUP_ID="sg-06ac079bdce544635"
+          SECURITY_GROUP_ID="sg-0c78d4025e3337f81"
           IP_ADDRESS=${{ env.IP_ADDRESS }}
           aws ec2 authorize-security-group-ingress \
             --group-id $SECURITY_GROUP_ID \
@@ -175,7 +175,7 @@ jobs:
             
       - name: Remove Added Security Group Rule
         run: |
-          SECURITY_GROUP_ID="sg-06ac079bdce544635"
+          SECURITY_GROUP_ID="sg-0c78d4025e3337f81"
           aws ec2 revoke-security-group-ingress \
             --group-id $SECURITY_GROUP_ID \
             --protocol tcp \
