@@ -136,8 +136,9 @@ jobs:
     
       - name: Add remote host to known_hosts # Add this to Startup Scripts on Terraform
         run: |
+          ls
           mkdir -p ~/.ssh
-          ssh-keyscan -H 54.161.136.144 >> ~/.ssh/known_hosts
+          ssh-keyscan -H 3.227.166.26 >> ~/.ssh/known_hosts
 
       - name: Zip Files
         run: |
