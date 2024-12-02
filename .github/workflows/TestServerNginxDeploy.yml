@@ -146,14 +146,15 @@ jobs:
         
       - name: Transfer ZIP to EC2
         run: |
-          ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem ec2-user@3.227.166.26 'mkdir -p ~/wonderWhy/nginx'
+          ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem ec2-user@3.227.166.26 << 'EOF'
+          mkdir -p ~/wonderWhy/nginx
+          rm -rf ~/wonderWhy/nginx/*
+          EOF
           rsync -avz -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem' /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/deploy_package.zip ${{ env.ELASTIC_IP }}:~/wonderWhy/nginx/
         
       - name: Unzip and Clean Up on EC2
         run: |
           ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem ${{ secrets.ELASTIC_IP }} << 'EOF'
-
-          rm -rf ~/wonderWhy/nginx/*
           unzip -o ~/wonderWhy/nginx/deploy_package.zip -d ~/wonderWhy/nginx
           rm -f ~/wonderWhy/nginx/deploy_package.zip
           EOF
