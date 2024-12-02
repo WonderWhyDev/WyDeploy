@@ -20,7 +20,7 @@ jobs:
           sparse-checkout-cone-mode: false
 
             
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+      - run: echo "💡 The ${{ github.repository }}/flutterFlow/magnum folder has been cloned to the runner."
 
       - name: Set up Flutter SDK
         uses: subosito/flutter-action@v2
@@ -44,4 +44,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ff-web-app
-          path: wonderWhy/flutterFlow/magnum/build/web.zip
+          path: flutterFlow/magnum/build/web.zip
