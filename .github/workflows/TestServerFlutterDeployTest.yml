@@ -16,10 +16,8 @@ jobs:
           repository: WonderWhyDev/wonderWhy
           token: ${{ secrets.REPO_READ_TOKEN }}
           fetch-depth: 1
-          sparse-checkout-cone-mode: true
-          sparse-checkout-paths: |
-            flutterFlow/magnum/
-            flutterFlow/magnum/**/*
+          sparse-checkout: 'flutterFlow/magnum'
+          sparse-checkout-cone-mode: false
 
             
       - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
