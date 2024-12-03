@@ -150,7 +150,7 @@ jobs:
           mkdir -p ~/wonderWhy/nginx
           rm -rf ~/wonderWhy/nginx/*
           EOF
-          rsync -avz -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem' /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/deploy_package.zip ${{ env.ELASTIC_IP }}:~/wonderWhy/nginx/
+          rsync -avz -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem' /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/wonderWhy/nginx/deploy_package.zip ${{ env.ELASTIC_IP }}:~/wonderWhy/nginx/
         
       - name: Unzip and Clean Up on EC2
         run: |
