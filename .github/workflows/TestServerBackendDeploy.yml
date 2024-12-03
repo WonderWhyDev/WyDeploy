@@ -169,7 +169,7 @@ jobs:
           path: wonderWhy
           token: ${{ secrets.REPO_READ_TOKEN }}
       - name: Download dist folder
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: dist-folder-backend
           path: wonderWhy/backend/dist/        
