@@ -142,8 +142,7 @@ jobs:
 
       - name: Zip Files
         run: |
-
-          cd /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/wonderWhy/nginx zip -r deploy_package.zip .
+          cd "/home/runner/work/wonderMoveDeploy/wonderMoveDeploy/wonderWhy/nginx" && zip -r deploy_package.zip .
 
       - name: Transfer ZIP to EC2
         run: |
