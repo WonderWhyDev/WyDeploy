@@ -153,7 +153,7 @@ jobs:
           yarn install
           yarn b build
       - name: Upload Dist
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: dist-folder-backend
           path: wonderWhy/backend/dist/
