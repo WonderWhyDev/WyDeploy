@@ -219,6 +219,7 @@ jobs:
       - name: Transfer ZIP Files to EC2
         run: |
           ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem ${{ env.ELASTIC_IP }} << 'EOF'
+          chmod 600 SSH_PRIVATE_KEY_FOR_EC2.pem
           mkdir -p ~/wonderWhy
           rm -rf ~/wonderWhy/*
           EOF
