@@ -143,6 +143,7 @@ jobs:
           repository: WonderWhyDev/wonderWhy
           path: wonderWhy
           token: ${{ secrets.REPO_READ_TOKEN }}
+          ref: test_server-deploy
       - uses: actions/setup-node@v3
         with:
           node-version: '18'
@@ -153,7 +154,7 @@ jobs:
           yarn install
           yarn b build
       - name: Upload Dist
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: dist-folder-backend
           path: wonderWhy/backend/dist/
@@ -169,7 +170,7 @@ jobs:
           path: wonderWhy
           token: ${{ secrets.REPO_READ_TOKEN }}
       - name: Download dist folder
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: dist-folder-backend
           path: wonderWhy/backend/dist/        
