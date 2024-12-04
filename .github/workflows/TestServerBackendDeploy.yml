@@ -244,7 +244,7 @@ jobs:
         run : |
           ssh -t -i SSH_PRIVATE_KEY_FOR_EC2.pem ${{ env.ELASTIC_IP }}  << EOF
             set -e
-            cd wonderWhy
+            cd wonderWhy/backend
             sed -i '/^export CLIENT_ID=/d' ~/.bashrc
             echo 'export CLIENT_ID=$CLIENT_ID' >> ~/.bashrc
             sed -i '/^export CLIENT_SECRET=/d' ~/.bashrc
