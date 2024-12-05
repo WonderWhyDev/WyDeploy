@@ -160,12 +160,12 @@ jobs:
                 cd wonderWhy
                 source /home/ec2-user/.bashrc
 
-                NETWORK_NAME="wonderwhy_postgres-network"
-                if ! docker network inspect "$NETWORK_NAME" >/dev/null 2>&1; then
-                  echo "Creating Docker network: $NETWORK_NAME"
-                  docker network create "$NETWORK_NAME"
+                
+                if ! docker network inspect "wonderwhy_postgres-network" >/dev/null 2>&1; then
+                  echo "Creating Docker network: wonderwhy_postgres-network"
+                  docker network create "wonderwhy_postgres-network"
                 else
-                  echo "Network '$NETWORK_NAME' already exists."
+                  echo "Network 'wonderwhy_postgres-network' already exists."
                 fi
 
                 docker-compose stop zitadel
