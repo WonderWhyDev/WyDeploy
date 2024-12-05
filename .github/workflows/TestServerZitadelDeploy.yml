@@ -97,13 +97,7 @@ jobs:
   AutoDeployment:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository code
-        uses: actions/checkout@v4
-        with:
-          repository: WonderWhyDev/wonderWhy
-          path: wonderWhy
-          token: ${{ secrets.REPO_READ_TOKEN }}
-          ref: test_server_deploy
+    
       - name: Get Runner IP
         run: |
           IP_ADDRESS=$(curl -s https://api.ipify.org)
@@ -141,9 +135,6 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan -H 3.227.166.26 >> ~/.ssh/known_hosts
 
-      - name: Clone Repository to EC2
-        run: |
-          rsync -avz -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem' /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/wonderWhy ${{ env.ELASTIC_IP }}:~/
 
       - name: Clone Secrets to EC2
         run: |
@@ -159,7 +150,6 @@ jobs:
                 set -e
                 cd wonderWhy
                 source /home/ec2-user/.bashrc
-
                 
                 if ! docker network inspect "wonderwhy_postgres-network" >/dev/null 2>&1; then
                   echo "Creating Docker network: wonderwhy_postgres-network"
