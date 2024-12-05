@@ -250,6 +250,15 @@ jobs:
             sed -i '/^export CLIENT_SECRET=/d' ~/.bashrc
             echo 'export CLIENT_SECRET=$CLIENT_SECRET' >> ~/.bashrc
             source /home/ec2-user/.bashrc
+
+            NETWORK_NAME="wonderwhy_postgres-network"
+            if ! docker network inspect "$NETWORK_NAME" >/dev/null 2>&1; then
+              echo "Creating Docker network: $NETWORK_NAME"
+              docker network create "$NETWORK_NAME"
+            else
+              echo "Network '$NETWORK_NAME' already exists."
+            fi
+
             docker-compose stop backend 
             docker-compose up setup -d
             docker-compose up backend -d

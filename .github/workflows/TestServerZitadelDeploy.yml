@@ -103,6 +103,7 @@ jobs:
           repository: WonderWhyDev/wonderWhy
           path: wonderWhy
           token: ${{ secrets.REPO_READ_TOKEN }}
+          ref: test_server_deploy
       - name: Get Runner IP
         run: |
           IP_ADDRESS=$(curl -s https://api.ipify.org)
@@ -158,6 +159,15 @@ jobs:
                 set -e
                 cd wonderWhy
                 source /home/ec2-user/.bashrc
+
+                NETWORK_NAME="wonderwhy_postgres-network"
+                if ! docker network inspect "$NETWORK_NAME" >/dev/null 2>&1; then
+                  echo "Creating Docker network: $NETWORK_NAME"
+                  docker network create "$NETWORK_NAME"
+                else
+                  echo "Network '$NETWORK_NAME' already exists."
+                fi
+
                 docker-compose stop zitadel
                 docker-compose up zitadel -d
             EOF
