@@ -18,7 +18,7 @@ jobs:
           fetch-depth: 1
           sparse-checkout: 'flutterFlow/magnum'
           sparse-checkout-cone-mode: false
-
+          ref : test_server_deploy
             
       - run: echo "💡 The ${{ github.repository }}/flutterFlow/magnum folder has been cloned to the runner."
 
@@ -26,19 +26,12 @@ jobs:
         uses: subosito/flutter-action@v2
 
       - run: |
-          pwd
-          ls 
           cd flutterFlow/magnum
-          ls
           sed -i 's|<base href="/">|<base href="/flutterflow/">|' web/index.html
           flutter clean
           flutter pub get         
           flutter build web --release --web-renderer html
           zip -r build/web.zip build/web
-          rm -rf build/web 
-          ls build/
-          
-          
 
       - name: Upload Web Build and UI Build as artifact
         uses: actions/upload-artifact@v3
@@ -50,7 +43,14 @@ jobs:
     runs-on: ubuntu-latest
     needs: [FlutterFlowWebBuild]
     steps:
-      
+      - name: Check out repository code
+        uses: actions/checkout@v4
+        with:
+          repository: WonderWhyDev/wonderWhy
+          path: wonderWhy
+          token: ${{ secrets.REPO_READ_TOKEN }}
+          ref: test_server_deploy
+
       - name: Download dist folder
         uses: actions/download-artifact@v3
         with:
@@ -96,12 +96,17 @@ jobs:
           
       - name: Copy Dist Folder to EC2
         run: | 
-          rsync -avz -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem' /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/wonderWhy/flutterFlow/magnum/build/web.zip/web.zip  ${{ env.ELASTIC_IP }}:~/wonderWhy/nginx/flutterflow/
+          rsync -avz -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem' /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/flutterFlow/magnum/build/web.zip  ${{ env.ELASTIC_IP }}:/home/ec2-user/wonderWhy/nginx/flutterflow
 
       - name: Unzip  flutterFlow Web Build on EC2
         run: |
-          ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem ${{ env.ELASTIC_IP }} 'unzip -o ~/wonderWhy/nginx/flutterflow/web.zip -d ~/wonderWhy/nginx/flutterflow/'
-          ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem ${{ env.ELASTIC_IP }} 'rm ~/wonderWhy/nginx/flutterflow/web.zip' 
+          ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem ${{ env.ELASTIC_IP }} << 'EOF'
+          pwd
+          ls -l /home/ec2-user/wonderWhy/nginx/flutterflow
+          ls
+          unzip -o /home/ec2-user/wonderWhy/nginx/flutterflow/web.zip/web.zip -d /home/ec2-user/wonderWhy/nginx/flutterflow
+          rm -f /home/ec2-user/wonderWhy/nginx/flutterflow/web.zip
+          EOF
 
       - name: Remove Added Security Group Rule
         run: |
