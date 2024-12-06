@@ -31,16 +31,13 @@ jobs:
           flutter clean
           flutter pub get         
           flutter build web --release --web-renderer html
-          zip -r build/web.zip build/web
-          rm -rf build/web 
-          ls build/
-          
+          zip -r build/flutterBuild.zip build/web
 
       - name: Upload Web Build and UI Build as artifact
         uses: actions/upload-artifact@v3
         with:
           name: ff-web-app
-          path: flutterFlow/magnum/build/web.zip
+          path: flutterFlow/magnum/build/flutterBuild.zip
 
   FF_UI_Deployment:
     runs-on: ubuntu-latest
@@ -58,7 +55,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ff-web-app
-          path: flutterFlow/magnum/build/web.zip
+          path: flutterFlow/magnum/build/flutterBuild.zip
 
       - name: Set Variables
         run: echo "ELASTIC_IP=ec2-user@3.227.166.26" >> $GITHUB_ENV
@@ -99,7 +96,7 @@ jobs:
           
       - name: Copy Dist Folder to EC2
         run: | 
-          rsync -avz -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem' /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/flutterFlow/magnum/build/web.zip  ${{ env.ELASTIC_IP }}:/home/ec2-user/wonderWhy/nginx/flutterflow
+          rsync -avz -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem' /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/flutterFlow/magnum/build/flutterBuild.zip  ${{ env.ELASTIC_IP }}:/home/ec2-user/wonderWhy/nginx/flutterflow
 
       - name: Unzip  flutterFlow Web Build on EC2
         run: |
