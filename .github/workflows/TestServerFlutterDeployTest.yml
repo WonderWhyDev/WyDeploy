@@ -104,7 +104,7 @@ jobs:
           ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem ${{ env.ELASTIC_IP }} << 'EOF'
           unzip -o /home/ec2-user/wonderWhy/nginx/flutterflow/web.zip -d /home/ec2-user/wonderWhy/nginx/flutterflow/
           cd ~/wonderWhy/nginx/flutterflow/
-          mv -f web/* web/.* .
+          rsync -a --remove-source-files web/ .
           rm -rf web
           rm -rf web.zip
           EOF
