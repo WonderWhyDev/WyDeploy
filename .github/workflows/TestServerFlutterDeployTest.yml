@@ -38,7 +38,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ff-web-app
-          path: flutterFlow/magnum/build/web.zip
+          path: flutterFlow/magnum/build/flutterflow.zip
 
   FF_UI_Deployment:
     runs-on: ubuntu-latest
