@@ -52,16 +52,11 @@ jobs:
           token: ${{ secrets.REPO_READ_TOKEN }}
           ref: test_server_deploy
 
-      - name: Download dist folder
+      - name: Download WEB ZIP FILE
         uses: actions/download-artifact@v3
         with:
           name: ff-web-app
           path: flutterFlow/magnum/build/
-
-      - name : check ZIP File 
-        run : |
-          cd /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/flutterFlow/magnum/build/
-          file web.zip
 
       - name: Set Variables
         run: echo "ELASTIC_IP=ec2-user@3.227.166.26" >> $GITHUB_ENV
@@ -100,20 +95,18 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan -H 3.227.166.26 >> ~/.ssh/known_hosts
           
-      - name: Copy Dist Folder to EC2
+      - name: Copy ZIP FILE to EC2
         run: | 
           rsync -avz -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem' /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/flutterFlow/magnum/build/web.zip  ${{ env.ELASTIC_IP }}:/home/ec2-user/wonderWhy/nginx/flutterflow/
 
       - name: Unzip  flutterFlow Web Build on EC2
         run: |
           ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem ${{ env.ELASTIC_IP }} << 'EOF'
-          pwd
-          ls -l /home/ec2-user/wonderWhy/nginx/flutterflow
-          ls
           unzip -o /home/ec2-user/wonderWhy/nginx/flutterflow/web.zip -d /home/ec2-user/wonderWhy/nginx/flutterflow/
-          mv web/* . 
-          rmdir web
-          rm -rf /home/ec2-user/wonderWhy/nginx/flutterflow/web.zip
+          cd ~/wonderWhy/nginx/flutterflow/
+          mv -f web/* web/.* .
+          rm -rf web
+          rm -rf web.zip
           EOF
 
       - name: Remove Added Security Group Rule
