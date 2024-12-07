@@ -57,6 +57,11 @@ jobs:
           name: ff-web-app
           path: flutterFlow/magnum/build/web.zip
 
+      - name : check ZIP File 
+        run : |
+          cd wonderWhy/flutterFlow/magnum/build
+          file web.zip
+
       - name: Set Variables
         run: echo "ELASTIC_IP=ec2-user@3.227.166.26" >> $GITHUB_ENV
 
