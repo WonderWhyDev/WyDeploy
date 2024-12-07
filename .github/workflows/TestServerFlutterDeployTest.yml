@@ -32,19 +32,19 @@ jobs:
           flutter pub get         
           flutter build web --release --web-renderer html
           cd build/
-          zip -r flutterflow.zip web
+          zip -r web.zip web
 
       - name: Upload Web Build and UI Build as artifact
         uses: actions/upload-artifact@v3
         with:
           name: ff-web-app
-          path: flutterFlow/magnum/build/flutterflow.zip
+          path: flutterFlow/magnum/build/web.zip
 
   FF_UI_Deployment:
     runs-on: ubuntu-latest
     needs: [FlutterFlowWebBuild]
     steps:
-
+      
       - name: Download WEB ZIP FILE
         uses: actions/download-artifact@v3
         with:
@@ -90,15 +90,16 @@ jobs:
           
       - name: Copy ZIP FILE to EC2
         run: | 
-          rsync -avz -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem' /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/flutterFlow/magnum/build/flutterflow.zip  ${{ env.ELASTIC_IP }}:/home/ec2-user/wonderWhy/nginx/
+          rsync -avz -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem' /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/flutterFlow/magnum/build/web.zip  ${{ env.ELASTIC_IP }}:/home/ec2-user/wonderWhy/nginx/flutterflow/
 
       - name: Unzip  flutterFlow Web Build on EC2
         run: |
           ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem ${{ env.ELASTIC_IP }} << 'EOF'
-          cd ~/wonderWhy/nginx/
-          rm -rf flutterflow
-          unzip -o flutterflow.zip 
-          rm -rf flutterflow.zip
+          unzip -o /home/ec2-user/wonderWhy/nginx/flutterflow/web.zip -d /home/ec2-user/wonderWhy/nginx/flutterflow/
+          cd ~/wonderWhy/nginx/flutterflow/
+          rsync -a --remove-source-files web/ .
+          rm -rf web
+          rm -rf web.zip
           EOF
 
       - name: Remove Added Security Group Rule
