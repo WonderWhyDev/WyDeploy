@@ -32,11 +32,10 @@ jobs:
           echo "CLIENT_SECRET= ${{ secrets.MAGNUM_CLIENT_SECRET }} " >> .env
           yarn build
           zip -r dist.zip dist
-          rm -rf dist
           ls 
 
 
-      - name: Upload Web Build and UI Build as artifact
+      - name: Upload Web Build as artifact
         uses: actions/upload-artifact@v3
         with:
           name: dist-folder-ui
@@ -97,7 +96,7 @@ jobs:
       - name: Unzip  Web Build on EC2
         run: |
           ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem ${{ env.ELASTIC_IP }} << 'EOF'
-          unzip -o /home/ec2-user/wonderWhy/nginx/html/web.zip -d /home/ec2-user/wonderWhy/nginx/html/
+          unzip -o ~/wonderWhy/nginx/html/web.zip -d ~/wonderWhy/nginx/html/
           cd ~/wonderWhy/nginx/html/
           rsync -a --remove-source-files web/ .
           rm -rf web
