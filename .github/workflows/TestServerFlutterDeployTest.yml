@@ -102,7 +102,7 @@ jobs:
           
       - name: Copy Dist Folder to EC2
         run: | 
-          rsync -avz -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem' /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/flutterFlow/magnum/build/web.zip/*  ${{ env.ELASTIC_IP }}:/home/ec2-user/wonderWhy/nginx/flutterflow
+          rsync -avz -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem' /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/flutterFlow/magnum/build/web.zip  ${{ env.ELASTIC_IP }}:/home/ec2-user/wonderWhy/nginx/flutterflow
 
       - name: Unzip  flutterFlow Web Build on EC2
         run: |
