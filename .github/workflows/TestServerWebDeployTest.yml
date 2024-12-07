@@ -96,11 +96,11 @@ jobs:
       - name: Unzip  Web Build on EC2
         run: |
           ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem ${{ env.ELASTIC_IP }} << 'EOF'
-          unzip -o ~/wonderWhy/nginx/html/web.zip -d ~/wonderWhy/nginx/html/
+          unzip -o ~/wonderWhy/nginx/html/dist.zip -d ~/wonderWhy/nginx/html/
           cd ~/wonderWhy/nginx/html/
-          rsync -a --remove-source-files web/ .
-          rm -rf web
-          rm -rf web.zip
+          rsync -a --remove-source-files dist/ .
+          rm -rf dist
+          rm -rf dist.zip
           EOF
 
       - name: Remove Added Security Group Rule
