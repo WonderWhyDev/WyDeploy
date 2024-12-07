@@ -59,7 +59,7 @@ jobs:
 
       - name : check ZIP File 
         run : |
-          cd wonderWhy/flutterFlow/magnum/build
+          cd /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/flutterFlow/magnum/build/
           file web.zip
 
       - name: Set Variables
