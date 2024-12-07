@@ -44,14 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [FlutterFlowWebBuild]
     steps:
-      - name: Check out repository code
-        uses: actions/checkout@v4
-        with:
-          repository: WonderWhyDev/wonderWhy
-          path: wonderWhy
-          token: ${{ secrets.REPO_READ_TOKEN }}
-          ref: test_server_deploy
-
+    
       - name: Download WEB ZIP FILE
         uses: actions/download-artifact@v3
         with:
