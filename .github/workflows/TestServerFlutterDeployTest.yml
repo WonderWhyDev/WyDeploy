@@ -102,7 +102,7 @@ jobs:
           
       - name: Copy Dist Folder to EC2
         run: | 
-          rsync -avz -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem' /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/flutterFlow/magnum/build/web.zip  ${{ env.ELASTIC_IP }}:/home/ec2-user/wonderWhy/nginx/flutterflow
+          rsync -avz -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem' /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/flutterFlow/magnum/build/web.zip  ${{ env.ELASTIC_IP }}:/home/ec2-user/wonderWhy/nginx/flutterflow/
 
       - name: Unzip  flutterFlow Web Build on EC2
         run: |
@@ -110,8 +110,8 @@ jobs:
           pwd
           ls -l /home/ec2-user/wonderWhy/nginx/flutterflow
           ls
-          unzip -o /home/ec2-user/wonderWhy/nginx/flutterflow/web.zip/ -d /home/ec2-user/wonderWhy/nginx/flutterflow
-          rm -rf /home/ec2-user/wonderWhy/nginx/flutterflow/web.zip
+          unzip -o /home/ec2-user/wonderWhy/nginx/flutterflow/web.zip -d /home/ec2-user/wonderWhy/nginx/flutterflow/
+          # rm -rf /home/ec2-user/wonderWhy/nginx/flutterflow/web.zip
           EOF
 
       - name: Remove Added Security Group Rule
