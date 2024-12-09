@@ -1,0 +1,54 @@
+name: Generate SSL Certificate
+
+on:
+ workflow_dispatch:
+
+jobs:
+
+  generate-certificate:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Configure AWS CLI
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+        
+    - name: Install Certbot
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y certbot python3-certbot-dns-route53
+        
+    - name: Generate SSL Certificate
+      run: |
+        certbot certonly \
+          --dns-route53 \
+          --dns-route53-propagation-seconds 60 \
+          -d test.wondermove.in \
+          -d auth.test.wondermove.in \
+          --email your-email@example.com \
+          --agree-tos \
+          --non-interactive
+          
+    - name: Setup SSH Key
+      env:
+        SSH_PRIVATE_KEY_FOR_EC2: ${{ secrets.SSH_PRIVATE_KEY_FOR_EC2 }}
+      run: |
+        echo "$SSH_PRIVATE_KEY_FOR_EC2" > SSH_PRIVATE_KEY_FOR_EC2.pem
+        chmod 600 SSH_PRIVATE_KEY_FOR_EC2.pem
+
+    
+    - name: Add remote host to known_hosts # Add this to Startup Scripts on Terraform
+      run: |
+        ls
+        mkdir -p ~/.ssh
+        ssh-keyscan -H 3.227.166.26 >> ~/.ssh/known_hosts
+        
+    - name: Clone Secrets to EC2
+      run: |
+        rsync -avz  -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem -o StrictHostKeyChecking=no' /etc/letsencrypt/live/test.wondermove.in/fullchain.pem  ${{ env.ELASTIC_IP }}:~/
+        rsync -avz  -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem -o StrictHostKeyChecking=no' /etc/letsencrypt/live/test.wondermove.in/privkey.pem  ${{ env.ELASTIC_IP }}:~/
