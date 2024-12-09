@@ -32,7 +32,10 @@ jobs:
           -d auth.test.wondermove.in \
           --email your-email@example.com \
           --agree-tos \
-          --non-interactive
+          --non-interactive \
+          --config-dir /tmp \
+          --work-dir /tmp \
+          --logs-dir /tmp \
           
     - name: Setup SSH Key
       env:
