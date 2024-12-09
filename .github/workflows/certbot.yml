@@ -33,6 +33,8 @@ jobs:
           -d auth.test.wondermove.in \
           --agree-tos \
           --non-interactive \
+          --config-dir ./ \
+          --work-dir ./ \
           --logs-dir /tmp \
 
     - name: print logs
