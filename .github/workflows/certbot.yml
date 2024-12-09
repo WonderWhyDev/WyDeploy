@@ -31,6 +31,7 @@ jobs:
           --dns-route53-propagation-seconds 60 \
           -d test.wondermove.in \
           -d auth.test.wondermove.in \
+           --email thinker@wonderwhy.in \
           --agree-tos \
           --non-interactive \
           --config-dir ./ \
