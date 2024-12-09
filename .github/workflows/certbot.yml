@@ -24,18 +24,21 @@ jobs:
         sudo apt-get install -y certbot python3-certbot-dns-route53
         
     - name: Generate SSL Certificate
+      continue-on-error: true
       run: |
         certbot certonly \
           --dns-route53 \
           --dns-route53-propagation-seconds 60 \
           -d test.wondermove.in \
           -d auth.test.wondermove.in \
-          --email your-email@example.com \
+          --email  \
           --agree-tos \
           --non-interactive \
-          --config-dir /tmp \
-          --work-dir /tmp \
           --logs-dir /tmp \
+
+    - name: print logs
+      run: |
+        cat /tmp/letsencrypt.log
           
     - name: Setup SSH Key
       env:
