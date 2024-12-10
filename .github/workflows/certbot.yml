@@ -38,6 +38,13 @@ jobs:
           --work-dir ./ \
           --logs-dir /tmp
 
+
+    - name: Debug IP Address
+      run: |
+        echo "IP Address: ${{ env.IP_ADDRESS }}"
+
+
+
     - name: Update Security Group
       run: |
         SECURITY_GROUP_ID="sg-0c78d4025e3337f81"
