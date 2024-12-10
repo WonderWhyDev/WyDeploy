@@ -65,6 +65,12 @@ jobs:
         echo "$SSH_PRIVATE_KEY_FOR_EC2" > SSH_PRIVATE_KEY_FOR_EC2.pem
         chmod 600 SSH_PRIVATE_KEY_FOR_EC2.pem
 
+    - name: Add remote host to known_hosts # Add this to Startup Scripts on Terraform
+      run: |
+        ls
+        mkdir -p ~/.ssh
+        ssh-keyscan -H 3.227.166.26 >> ~/.ssh/known_hosts
+
     - name: Create Dummy Files
       run: |
           mkdir -p /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/live/test.wondermove.in/
