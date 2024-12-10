@@ -23,20 +23,20 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y certbot python3-certbot-dns-route53
         
-    - name: Generate SSL Certificate
-      continue-on-error: true
-      run: |
-        certbot certonly \
-          --dns-route53 \
-          --dns-route53-propagation-seconds 60 \
-          -d test.wondermove.in \
-          -d auth.test.wondermove.in \
-           --email thinker@wonderwhy.in \
-          --agree-tos \
-          --non-interactive \
-          --config-dir ./ \
-          --work-dir ./ \
-          --logs-dir /tmp
+    # - name: Generate SSL Certificate
+    #   continue-on-error: true
+    #   run: |
+    #     certbot certonly \
+    #       --dns-route53 \
+    #       --dns-route53-propagation-seconds 60 \
+    #       -d test.wondermove.in \
+    #       -d auth.test.wondermove.in \
+    #        --email thinker@wonderwhy.in \
+    #       --agree-tos \
+    #       --non-interactive \
+    #       --config-dir ./ \
+    #       --work-dir ./ \
+    #       --logs-dir /tmp
 
     - name: Get Runner IP
       run: |
@@ -64,11 +64,39 @@ jobs:
       run: |
         echo "$SSH_PRIVATE_KEY_FOR_EC2" > SSH_PRIVATE_KEY_FOR_EC2.pem
         chmod 600 SSH_PRIVATE_KEY_FOR_EC2.pem
-        
-    - name: Clone Secrets to EC2
+
+    - name: Create Dummy Files
       run: |
-        rsync -avz  -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem -o StrictHostKeyChecking=no' /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/live/test.wondermove.in/fullchain.pem  ${{ env.ELASTIC_IP }}:~/
-        rsync -avz  -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem -o StrictHostKeyChecking=no' /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/live/test.wondermove.in/privkey.pem  ${{ env.ELASTIC_IP }}:~/
+          mkdir -p /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/live/test.wondermove.in/
+          echo "This is a dummy fullchain.pem file" > /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/live/test.wondermove.in/fullchain.pem
+          echo "This is a dummy privkey.pem file" > /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/live/test.wondermove.in/privkey.pem
+
+    - name: Test SSH Connection
+      run: |
+        ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem -o StrictHostKeyChecking=no ec2-user@${{ env.ELASTIC_IP }} "echo Connection Successful"
+
+    - name: Clone Dummy Files to EC2
+      run: |
+          rsync -avz -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem -o StrictHostKeyChecking=no' \
+          /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/live/test.wondermove.in/fullchain.pem \
+          ec2-user@${{ env.ELASTIC_IP }}:~/
+
+          rsync -avz -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem -o StrictHostKeyChecking=no' \
+          /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/live/test.wondermove.in/privkey.pem \
+          ec2-user@${{ env.ELASTIC_IP }}:~/
+ 
+    - name: Verify Dummy Files on EC2
+      run: |
+        ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem -o StrictHostKeyChecking=no ec2-user@${{ env.ELASTIC_IP }} "ls -l ~/fullchain.pem ~/privkey.pem"
+
+    - name: Cleanup Dummy Files on EC2
+      run: |
+        ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem -o StrictHostKeyChecking=no ec2-user@${{ env.ELASTIC_IP }} "rm -f ~/fullchain.pem ~/privkey.pem"
+        
+    # - name: Clone Secrets to EC2
+    #   run: |
+    #     rsync -avz  -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem -o StrictHostKeyChecking=no' /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/live/test.wondermove.in/fullchain.pem  ${{ env.ELASTIC_IP }}:~/
+    #     rsync -avz  -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem -o StrictHostKeyChecking=no' /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/live/test.wondermove.in/privkey.pem  ${{ env.ELASTIC_IP }}:~/
 
 
     - name: Remove Added Security Group Rule
