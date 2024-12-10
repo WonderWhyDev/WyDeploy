@@ -38,11 +38,15 @@ jobs:
           --work-dir ./ \
           --logs-dir /tmp
 
+    - name: Get Runner IP
+      run: |
+        IP_ADDRESS=$(curl -s https://api.ipify.org)
+        echo "IP_ADDRESS=$IP_ADDRESS" >> $GITHUB_ENV
+
 
     - name: Debug IP Address
       run: |
         echo "IP Address: ${{ env.IP_ADDRESS }}"
-
 
 
     - name: Update Security Group
