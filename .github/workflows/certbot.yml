@@ -44,9 +44,8 @@ jobs:
         echo "IP_ADDRESS=$IP_ADDRESS" >> $GITHUB_ENV
 
 
-    - name: Debug IP Address
-      run: |
-        echo "IP Address: ${{ env.IP_ADDRESS }}"
+    - name: Set Variables
+      run: echo "ELASTIC_IP=ec2-user@52.4.164.231" >> $GITHUB_ENV
 
 
     - name: Update Security Group
@@ -70,6 +69,7 @@ jobs:
       run: |
         rsync -avz  -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem -o StrictHostKeyChecking=no' /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/live/test.wondermove.in/fullchain.pem  ${{ env.ELASTIC_IP }}:~/
         rsync -avz  -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem -o StrictHostKeyChecking=no' /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/live/test.wondermove.in/privkey.pem  ${{ env.ELASTIC_IP }}:~/
+
 
     - name: Remove Added Security Group Rule
       run: |
