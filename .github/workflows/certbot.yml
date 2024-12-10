@@ -45,7 +45,7 @@ jobs:
 
 
     - name: Set Variables
-      run: echo "ELASTIC_IP=ec2-user@52.4.164.231" >> $GITHUB_ENV
+      run: echo "ELASTIC_IP=ec2-user@3.227.166.26" >> $GITHUB_ENV
 
 
     - name: Update Security Group
