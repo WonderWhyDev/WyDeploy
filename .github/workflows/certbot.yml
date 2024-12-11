@@ -29,8 +29,8 @@ jobs:
         certbot certonly \
           --dns-route53 \
           --dns-route53-propagation-seconds 60 \
-          -d test.wondermove.in \
-          -d auth.test.wondermove.in \
+          -d test1.wondermove.in \
+          -d auth.test1.wondermove.in \
            --email thinker@wonderwhy.in \
           --agree-tos \
           --non-interactive \
@@ -75,8 +75,8 @@ jobs:
         
     - name: Clone Secrets to EC2
       run: |
-        rsync -avz  -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem -o StrictHostKeyChecking=no' /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/live/test.wondermove.in/fullchain.pem  ${{ env.ELASTIC_IP }}:~/
-        rsync -avz  -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem -o StrictHostKeyChecking=no' /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/live/test.wondermove.in/privkey.pem  ${{ env.ELASTIC_IP }}:~/
+        rsync -avzL  -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem -o StrictHostKeyChecking=no' /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/live/test.wondermove.in/fullchain.pem  ${{ env.ELASTIC_IP }}:~/
+        rsync -avzL  -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem -o StrictHostKeyChecking=no' /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/live/test.wondermove.in/privkey.pem  ${{ env.ELASTIC_IP }}:~/
 
 
     - name: Remove Added Security Group Rule
