@@ -221,7 +221,8 @@ jobs:
           ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem ${{ env.ELASTIC_IP }} << 'EOF'
           mkdir -p ~/wonderWhy
           sudo rm -rf ~/wonderWhy/*
-          chmod 755 /home/ec2-user/wonderWhy/
+          sudo chown -R ec2-user:ec2-user ~/wonderWhy
+          chmod 755 ~/wonderWhy
           EOF
           rsync -avz -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem' /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/wonderWhy/wonderWhy.zip ${{ env.ELASTIC_IP }}:~/wonderWhy
           
