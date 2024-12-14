@@ -158,8 +158,8 @@ jobs:
                   echo "Network 'wonderwhy_postgres-network' already exists."
                 fi
                 sudo chmod 666 /var/run/docker.sock
-                docker-compose stop zitadel
-                docker-compose up zitadel -d
+                sudo docker-compose stop zitadel
+                sudo docker-compose up zitadel -d
             EOF
 
       - name: Remove Added Security Group Rule
