@@ -169,7 +169,7 @@ jobs:
           repository: WonderWhyDev/wonderWhy
           path: wonderWhy
           token: ${{ secrets.REPO_READ_TOKEN }}
-          ref: test_server_deploy
+         
       - name: Download dist folder
         uses: actions/download-artifact@v4
         with:
