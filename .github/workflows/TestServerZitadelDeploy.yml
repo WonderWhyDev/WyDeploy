@@ -140,9 +140,9 @@ jobs:
         run: |
           echo "${{ secrets.TEST_DOMAIN_CA_CERTS_FULL_CHAIN }}" > fullchain.pem  
           echo "${{ secrets.TEST_DOMAIN_CA_CERTS_PRIVATE_KEY }}" > privkey.pem  
-          sudo chmod u+w /home/ec2-user/wonderWhy/zitadel/certs/
-          rsync -avz  -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem -o StrictHostKeyChecking=no' fullchain.pem  ${{ env.ELASTIC_IP }}:~/wonderWhy/zitadel/certs/
-          rsync -avz  -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem -o StrictHostKeyChecking=no' privkey.pem  ${{ env.ELASTIC_IP }}:~/wonderWhy/zitadel/certs/
+          sudo chmod u+w /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/
+          sudo rsync -avz  -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem -o StrictHostKeyChecking=no' fullchain.pem  ${{ env.ELASTIC_IP }}:~/wonderWhy/zitadel/certs/
+          sudo rsync -avz  -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem -o StrictHostKeyChecking=no' privkey.pem  ${{ env.ELASTIC_IP }}:~/wonderWhy/zitadel/certs/
 
       - name: Start Zitadel Container
         run: |
