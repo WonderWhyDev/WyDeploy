@@ -257,7 +257,7 @@ jobs:
             else
               echo "Network 'wonderwhy_postgres-network' already exists."
             fi
-
+            sudo chmod 666 /var/run/docker.sock
             docker-compose stop backend 
             docker-compose up setup -d
             docker-compose up backend -d
