@@ -102,7 +102,7 @@ jobs:
           repository: WonderWhyDev/wonderWhy
           path: wonderWhy
           token: ${{ secrets.REPO_READ_TOKEN }}
-          ref: test_server_deploy
+        
       - name: Get Runner IP
         run: |
           IP_ADDRESS=$(curl -s https://api.ipify.org)
@@ -173,6 +173,7 @@ jobs:
             set -e
             cd wonderWhy/nginx
             pwd
+            sudo chmod 666 /var/run/docker.sock
             docker-compose stop nginx
             docker-compose up nginx -d
             EOF
