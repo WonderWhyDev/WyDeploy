@@ -138,6 +138,10 @@ jobs:
 
       - name: Clone Secrets to EC2
         run: |
+          ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem ${{ env.ELASTIC_IP }} << 'EOF'
+          sudo chown -R ec2-user:ec2-user ~/wonderWhy/zitadel/certs/
+          chmod 755 ~/wonderWhy/zitadel/certs/
+          EOF
           echo "${{ secrets.TEST_DOMAIN_CA_CERTS_FULL_CHAIN }}" > fullchain.pem  
           echo "${{ secrets.TEST_DOMAIN_CA_CERTS_PRIVATE_KEY }}" > privkey.pem  
           sudo rsync -avz  -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem -o StrictHostKeyChecking=no' fullchain.pem  ${{ env.ELASTIC_IP }}:~/wonderWhy/zitadel/certs/
