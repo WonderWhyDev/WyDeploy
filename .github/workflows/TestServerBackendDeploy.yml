@@ -222,7 +222,7 @@ jobs:
           mkdir -p ~/wonderWhy
           sudo rm -rf ~/wonderWhy/*
           EOF
-          sudo chown -R ec2-user:ec2-user /home/ec2-user/wonderWhy
+          chmod 755 /home/ec2-user/wonderWhy/
           rsync -avz -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem' /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/wonderWhy/wonderWhy.zip ${{ env.ELASTIC_IP }}:~/wonderWhy
           
       - name: Extract ZIP Files and Clean Up on EC2
