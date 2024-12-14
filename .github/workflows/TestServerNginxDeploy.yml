@@ -174,8 +174,8 @@ jobs:
             cd wonderWhy/nginx
             pwd
             sudo chmod 666 /var/run/docker.sock
-            docker-compose stop nginx
-            docker-compose up nginx -d
+            sudo docker-compose stop nginx
+            sudo docker-compose up nginx -d
             EOF
             
       - name: Remove Added Security Group Rule
