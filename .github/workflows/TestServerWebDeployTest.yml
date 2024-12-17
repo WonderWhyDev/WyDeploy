@@ -28,8 +28,8 @@ jobs:
           cd web
           rm -rf .env
           touch .env
-          echo "CLIENT_ID=298388975423389698" >> .env
-          echo "CLIENT_SECRET=TaI1cSkOiq5MMNfNZGOXten1PpBjjeimXBD7F2pKcjmbxNljR2l56Lv5ity4j5op" >> .env
+          echo "CLIENT_ID=298494298440138754" >> .env
+          echo "CLIENT_SECRET=iKBrEdt8rknGGRAzGlIR0hCAbojZQjMLPru43OjDBitb05ZKq07IzA5HU6AdzMzu" >> .env
 
           yarn build
           zip -r dist.zip dist
