@@ -10,7 +10,7 @@ jobs:
           touch index.html
           touch bla.js
           zip -r web.zip ./
-      - uses: WonderWhyDev/copy-to-ec2-action@dbe7512dcf9fc9ad166190401375f41c49b795d5
+      - uses: WonderWhyDev/copy-to-ec2-action@317e451c466aa97158ca3f646121399f005343a7
         with:
            ec2IP: 3.227.166.26
            awsAccessKeyId: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
@@ -20,5 +20,6 @@ jobs:
            secuityGroupId: sg-0c78d4025e3337f81
            sshKey: ${{ secrets.SSH_PRIVATE_KEY_FOR_EC2 }}
            fileToCopy: web.zip
-           destination: ~/web.zip
+           destination: ~/
+           cleanUpdestination: ~/web.zip
            unzipDestination: /tmp/
