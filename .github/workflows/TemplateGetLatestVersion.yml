@@ -5,7 +5,9 @@ on:
       repoToken:
         required: true
     outputs:
-      latest_version: ${{ jobs.flutter_web_build.outputs.latest_version }}
+      latest_version:
+        description: "latest version of the repo"
+        value: ${{ jobs.flutter_web_build.outputs.latest_version }}
 
 jobs:
   flutter_web_build:
