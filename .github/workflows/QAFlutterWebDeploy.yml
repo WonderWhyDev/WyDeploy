@@ -22,7 +22,3 @@ jobs:
        ec2User: ec2-user
        secuityGroupId: sg-0c78d4025e3337f81
        sshKey: ${{ secrets.SSH_PRIVATE_KEY_FOR_EC2 }}
-       fileToCopy: web.zip
-       destination: ~/
-       cleanUpdestination: /tmp/
-       unzipDestination: ~/
