@@ -1,0 +1,11 @@
+name: Test Ground
+on:
+ workflow_dispatch:
+
+jobs:
+  FlutterFlowWebBuild:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          apt-get  -y install brotli
+          brotli --help
