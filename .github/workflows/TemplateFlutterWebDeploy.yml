@@ -8,6 +8,28 @@ on:
     secrets:
       repoToken:
         required: true
+      ec2IP:
+        required: true
+      awsAccessKeyId:
+        required: true
+      awsSecretKey:
+        required: true
+      awsRegion: 
+        required: true
+      ec2User:
+        required: true
+      secuityGroupId:
+        required: true
+      sshKey:
+        required: true
+      fileToCopy:
+        required: true
+      destination:
+        required: true
+      unzipDestination: 
+        required: true
+      cleanUpdestination:
+        required: true
 
 jobs:
   FlutterFlowWebBuild:
@@ -48,9 +70,17 @@ jobs:
           cd flutterFlow/magnum/build/
           zip -r web.zip web
 
-      - name: Upload Web Build and UI Build as artifact
-        uses: actions/upload-artifact@v3
+      - uses: WonderWhyDev/copy-to-ec2-action@317e451c466aa97158ca3f646121399f005343a7
         with:
-          name: ff-web-app
-          path: flutterFlow/magnum/build/web.zip
+           ec2IP: ${{ secrets.ec2IP }}
+           awsAccessKeyId: ${{ secrets.awsAccessKeyId }}
+           awsSecretKey: ${{ secrets.awsSecretKey }}
+           awsRegion: ${{ secrets.awsRegion }}
+           ec2User: ${{ secrets.ec2User }}
+           secuityGroupId: ${{ secrets.secuityGroupId }}
+           sshKey: ${{ secrets.sshKey }}
+           fileToCopy: ${{ secrets.fileToCopy }}
+           destination: ${{ secrets.destination }}
+           cleanUpdestination: ${{ secrets.cleanUpdestination }}
+           unzipDestination: ${{ secrets.unzipDestination }}
 
