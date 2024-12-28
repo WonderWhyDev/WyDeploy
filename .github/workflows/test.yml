@@ -11,4 +11,4 @@ jobs:
           brotli --help
           touch index.html
           touch bla.js
-          for FILE_EXT in '.js' '.css' '*.html'; do find DIR−typef−pathFILE_EXT | { [ -z "(cat)" ] && echo "no FILE_EXT files found" || echo "$(cat)" | xargs brotli -v --; }; done
+          for FILE_EXT in '.js' '.css' '*.html'; do find $DIR -type f -path $FILE_EXT | { [ -z "(cat)" ] && echo "no FILE_EXT files found" || echo "$(cat)" | xargs /brotli -v --; }; done
