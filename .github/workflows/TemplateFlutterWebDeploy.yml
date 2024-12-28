@@ -41,7 +41,7 @@ jobs:
         run: |
           sudo apt-get  -y install brotli
           cd flutterFlow/magnum/build/web
-          find ~/my_folder -type f -exec brotli -Z -v {} \;
+          find ./ -type f -exec brotli -Z -v {} \;
           
       - run: |
           cd flutterFlow/magnum/build/
