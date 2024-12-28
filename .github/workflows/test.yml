@@ -20,5 +20,5 @@ jobs:
            secuityGroupId: sg-0c78d4025e3337f81
            sshKey: ${{ secrets.SSH_PRIVATE_KEY_FOR_EC2 }}
            fileToCopy: web.zip
-           destination: ~/
+           destination: ~/web.zip
            unzipDestination: /tmp/
