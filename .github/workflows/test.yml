@@ -7,8 +7,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          sudo apt-get  -y install brotli
-          brotli --help
           touch index.html
           touch bla.js
-          for FILE_EXT in '.js' '.css' '*.html'; do find $DIR -type f -path $FILE_EXT | { [ -z "(cat)" ] && echo "no FILE_EXT files found" || echo "$(cat)" | xargs brotli -v --; }; done
+          zip -r web.zip web
+      - uses: WonderWhyDev/copy-to-ec2-action@819be555fd9af0da3902481332d80083832c13c9
+        with:
+           ec2IP: 52.4.164.231
+           awsAccessKeyId: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
+           awsSecretKey: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
+           awsRegion: us-east-1
+           ec2User: ec2-user
+           secuityGroupId: sg-0109e0cf4e941e2f5
+           sshKey: ${{ secrets.SSH_PRIVATE_KEY_FOR_EC2 }}
+           fileToCopy: web.zip
+           destination: ~/
+           unzipDestination: /tmp/
