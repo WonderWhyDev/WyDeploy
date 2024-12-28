@@ -79,8 +79,8 @@ jobs:
            ec2User: ${{ secrets.ec2User }}
            secuityGroupId: ${{ secrets.secuityGroupId }}
            sshKey: ${{ secrets.sshKey }}
-           fileToCopy: ${{ secrets.fileToCopy }}
-           destination: ${{ secrets.destination }}
-           cleanUpdestination: ${{ secrets.cleanUpdestination }}
-           unzipDestination: ${{ secrets.unzipDestination }}
+           fileToCopy: flutterFlow/magnum/build/web.zip
+           destination: ~/web.zip
+           cleanUpdestination: ~/
+           unzipDestination: ~/
 
