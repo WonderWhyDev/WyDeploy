@@ -1,0 +1,55 @@
+name: Test server Flutter Flow
+run-name: ${{ github.actor }} - ${{ github.event.head_commit.message }} commit is running
+on:
+  workflow_call:
+    inputs:
+      versionToBuild:
+        required: true
+        type: string
+    secrets:
+      repoToken:
+        required: true
+
+jobs:
+  FlutterFlowWebBuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out only flutterFlow web folder
+        uses: actions/checkout@v4
+        with:
+          repository: WonderWhyDev/wonderWhy
+          token: ${{ on.workflow_call.secrets.repoToken }}
+          fetch-depth: 1
+          sparse-checkout: 'flutterFlow/magnum'
+          sparse-checkout-cone-mode: false
+          ref : test_server_deploy
+          version: ${{ inputs.versionToBuild }}
+            
+      - name: Set up Flutter SDK
+        uses: subosito/flutter-action@v2
+
+      - run: |
+          cd flutterFlow/magnum
+          sed -i 's|<base href="/">|<base href="/flutterflow/">|' web/index.html
+          flutter clean
+          flutter pub get         
+          flutter build web --release --web-renderer html
+          cd build/web/
+          gzip index.html main.dart.js
+
+      - name: Brotli compress
+        id: brotli
+        uses: charlesworth/compress-action@1.0
+        with:
+          target-directory: 'flutterFlow/magnum/build/web'
+
+      - run: |
+          cd flutterFlow/magnum/build/
+          zip -r web.zip web
+
+      - name: Upload Web Build and UI Build as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ff-web-app
+          path: flutterFlow/magnum/build/web.zip
+

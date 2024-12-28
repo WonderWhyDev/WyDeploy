@@ -1,0 +1,120 @@
+name: Test server Flutter Flow
+run-name: ${{ github.actor }} - ${{ github.event.head_commit.message }} commit is running
+on:
+  workflow_call:
+    inputs:
+    secrets:
+      - REPO_READ_TOKEN
+
+jobs:
+  FlutterFlowWebBuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out only flutterFlow web folder
+        uses: actions/checkout@v4
+        with:
+          repository: WonderWhyDev/wonderWhy
+          token: ${{ on.workflow_call.secrets.REPO_READ_TOKEN }}
+          fetch-depth: 1
+          sparse-checkout: 'flutterFlow/magnum'
+          sparse-checkout-cone-mode: false
+          ref : test_server_deploy
+            
+      - name: Set up Flutter SDK
+        uses: subosito/flutter-action@v2
+
+      - run: |
+          cd flutterFlow/magnum
+          sed -i 's|<base href="/">|<base href="/flutterflow/">|' web/index.html
+          flutter clean
+          flutter pub get         
+          flutter build web --release --web-renderer html
+          cd build/web/
+          gzip index.html main.dart.js
+
+      - name: Brotli compress
+        id: brotli
+        uses: charlesworth/compress-action@1.0
+        with:
+          target-directory: 'flutterFlow/magnum/build/web'
+
+      - run: |
+          cd flutterFlow/magnum/build/
+          zip -r web.zip web
+
+      - name: Upload Web Build and UI Build as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ff-web-app
+          path: flutterFlow/magnum/build/web.zip
+
+  FF_UI_Deployment:
+    runs-on: ubuntu-latest
+    needs: [FlutterFlowWebBuild]
+    steps:
+      
+      - name: Download WEB ZIP FILE
+        uses: actions/download-artifact@v3
+        with:
+          name: ff-web-app
+          path: flutterFlow/magnum/build/
+
+      - name: Set Variables
+        run: echo "ELASTIC_IP=ec2-user@3.227.166.26" >> $GITHUB_ENV
+
+      - name: Get Runner IP
+        run: |
+          IP_ADDRESS=$(curl -s https://api.ipify.org)
+          echo "IP_ADDRESS=$IP_ADDRESS" >> $GITHUB_ENV
+
+      - name: Configure AWS CLI
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      
+      - name: Update Security Group
+        run: |
+          SECURITY_GROUP_ID="sg-0c78d4025e3337f81"
+          IP_ADDRESS=${{ env.IP_ADDRESS }}
+          aws ec2 authorize-security-group-ingress \
+            --group-id $SECURITY_GROUP_ID \
+            --protocol tcp \
+            --port 22 \
+            --cidr ${IP_ADDRESS}/32
+
+      - name: Setup SSH Key
+        env:
+          SSH_PRIVATE_KEY_FOR_EC2: ${{ secrets.SSH_PRIVATE_KEY_FOR_EC2 }}
+        run: |
+            echo "$SSH_PRIVATE_KEY_FOR_EC2" > SSH_PRIVATE_KEY_FOR_EC2.pem
+            chmod 600 SSH_PRIVATE_KEY_FOR_EC2.pem
+
+      - name: Add remote host to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H 3.227.166.26 >> ~/.ssh/known_hosts
+          
+      - name: Copy ZIP FILE to EC2
+        run: | 
+          rsync -avz -e 'ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem' /home/runner/work/wonderMoveDeploy/wonderMoveDeploy/flutterFlow/magnum/build/web.zip  ${{ env.ELASTIC_IP }}:/home/ec2-user/wonderWhy/nginx/flutterflow/
+
+      - name: Unzip  flutterFlow Web Build on EC2
+        run: |
+          ssh -i SSH_PRIVATE_KEY_FOR_EC2.pem ${{ env.ELASTIC_IP }} << 'EOF'
+          unzip -o /home/ec2-user/wonderWhy/nginx/flutterflow/web.zip -d /home/ec2-user/wonderWhy/nginx/flutterflow/
+          cd ~/wonderWhy/nginx/flutterflow/
+          rsync -a --remove-source-files web/ .
+          rm -rf web
+          rm -rf web.zip
+          EOF
+
+      - name: Remove Added Security Group Rule
+        run: |
+          SECURITY_GROUP_ID="sg-0c78d4025e3337f81"
+          aws ec2 revoke-security-group-ingress \
+            --group-id $SECURITY_GROUP_ID \
+            --protocol tcp \
+            --port 22 \
+            --cidr ${IP_ADDRESS}/32

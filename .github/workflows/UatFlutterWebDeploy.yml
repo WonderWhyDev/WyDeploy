@@ -1,0 +1,17 @@
+name: Test server Flutter Flow
+run-name: ${{ github.actor }} - ${{ github.event.head_commit.message }} commit is running
+on:
+  workflow_call:
+    secrets:
+      - REPO_READ_TOKEN
+
+jobs:
+  find-latest-version:
+    uses: ./.github/workflows/TemplateGetLatestVersion.yml
+  uat-flutter-flow-web-deploy:
+    uses: ./.github/workflows/TemplateFlutterWebDeploy.yml
+    needs: find-latest-version
+    with:
+      versionToBuild: ${{ needs.find-latest-version.outputs.latest_version }}
+    secrets:
+      repoToken: ${{ secrets.REPO_READ_TOKEN }}
