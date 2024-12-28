@@ -36,12 +36,13 @@ jobs:
           flutter clean
           flutter pub get         
           flutter build web --release --web-renderer html
+          rm -rf canvaskit
           
       - name: Brotli compress
         run: |
           sudo apt-get  -y install brotli
           cd flutterFlow/magnum/build/web
-          find ./ -type f -exec brotli -Z -v {} \;
+          find ./ -type f -exec brotli -jZv {} \;
           
       - run: |
           cd flutterFlow/magnum/build/
