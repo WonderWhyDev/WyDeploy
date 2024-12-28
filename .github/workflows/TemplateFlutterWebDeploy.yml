@@ -22,14 +22,6 @@ on:
         required: true
       sshKey:
         required: true
-      fileToCopy:
-        required: true
-      destination:
-        required: true
-      unzipDestination: 
-        required: true
-      cleanUpdestination:
-        required: true
 
 jobs:
   FlutterFlowWebBuild:
