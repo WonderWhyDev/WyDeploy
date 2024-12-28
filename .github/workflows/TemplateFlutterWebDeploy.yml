@@ -36,9 +36,7 @@ jobs:
           flutter clean
           flutter pub get         
           flutter build web --release --web-renderer html
-          cd build/web/
-          gzip index.html main.dart.js
-
+          
       - name: Brotli compress
         id: brotli
         uses: Charlesworth/compress-action@1.0.0
