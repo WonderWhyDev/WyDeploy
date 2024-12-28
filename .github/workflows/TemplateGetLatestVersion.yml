@@ -27,7 +27,8 @@ jobs:
       - name: Get latest version
         id: get_version
         run: |
-          cd wonderWhy
+          ls -l
+          cd WonderWhyDev/wonderWhy
           latest_version=$(git log -1 --format=%H)
           echo "latest_version=$latest_version" >> $GITHUB_ENV
 
