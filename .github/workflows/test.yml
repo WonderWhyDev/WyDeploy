@@ -7,5 +7,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          apt-get  -y install brotli
+          sudo apt-get  -y install brotli
           brotli --help
