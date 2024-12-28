@@ -6,7 +6,9 @@ on:
 jobs:
   find-latest-version:
     uses: ./.github/workflows/TemplateGetLatestVersion.yml
-  uat-flutter-flow-web-deploy:
+    secrets:
+      repoToken: ${{ secrets.REPO_READ_TOKEN }}
+  qa-flutter-flow-web-deploy:
     uses: ./.github/workflows/TemplateFlutterWebDeploy.yml
     needs: find-latest-version
     with:
