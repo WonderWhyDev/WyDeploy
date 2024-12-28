@@ -12,7 +12,7 @@ jobs:
           zip -r web.zip ./
       - uses: WonderWhyDev/copy-to-ec2-action@106bdfe579473b741dbf22b3e8df8e4f409bdb57
         with:
-           ec2IP: 52.4.164.231
+           ec2IP: 3.227.166.26
            awsAccessKeyId: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
            awsSecretKey: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
            awsRegion: us-east-1
