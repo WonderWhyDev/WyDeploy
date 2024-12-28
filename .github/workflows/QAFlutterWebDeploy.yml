@@ -14,4 +14,15 @@ jobs:
     with:
       versionToBuild: ${{ needs.find-latest-version.outputs.latest_version }}
     secrets:
-      repoToken: ${{ secrets.REPO_READ_TOKEN }}
+       repoToken: ${{ secrets.REPO_READ_TOKEN }}
+       ec2IP: 3.227.166.26
+       awsAccessKeyId: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
+       awsSecretKey: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
+       awsRegion: us-east-1
+       ec2User: ec2-user
+       secuityGroupId: sg-0c78d4025e3337f81
+       sshKey: ${{ secrets.SSH_PRIVATE_KEY_FOR_EC2 }}
+       fileToCopy: web.zip
+       destination: ~/
+       cleanUpdestination: /tmp/
+       unzipDestination: ~/
