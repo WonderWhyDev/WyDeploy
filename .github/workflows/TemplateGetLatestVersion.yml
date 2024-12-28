@@ -23,12 +23,12 @@ jobs:
           fetch-depth: 1
           sparse-checkout: '.gitignore'
           sparse-checkout-cone-mode: false
-          ref : test_server_deploy
 
       - name: Get latest version
         id: get_version
         run: |
-          latest_version=$(git describe --tags `git rev-list --tags --max-count=1`)
+          cd wonderWhy
+          latest_version=$(git log -1 --format=%H)
           echo "latest_version=$latest_version" >> $GITHUB_ENV
 
       - name: Output latest version
