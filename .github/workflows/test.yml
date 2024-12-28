@@ -10,7 +10,7 @@ jobs:
           touch index.html
           touch bla.js
           zip -r web.zip ./
-      - uses: WonderWhyDev/copy-to-ec2-action@106bdfe579473b741dbf22b3e8df8e4f409bdb57
+      - uses: WonderWhyDev/copy-to-ec2-action@dbe7512dcf9fc9ad166190401375f41c49b795d5
         with:
            ec2IP: 3.227.166.26
            awsAccessKeyId: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
