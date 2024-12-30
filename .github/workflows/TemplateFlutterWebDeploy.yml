@@ -62,7 +62,7 @@ jobs:
           cd flutterFlow/magnum/build/
           zip -r web.zip web
 
-      - uses: WonderWhyDev/copy-to-ec2-action@b75aa791342386d6fe6d73e91be133ecfc9f6c88
+      - uses: WonderWhyDev/copy-to-ec2-action@431571443c679e934bd87d8ab3888dd6d836cead
         with:
            ec2IP: ${{ secrets.ec2IP }}
            awsAccessKeyId: ${{ secrets.awsAccessKeyId }}
