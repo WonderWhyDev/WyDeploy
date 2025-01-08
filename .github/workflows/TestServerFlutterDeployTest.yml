@@ -28,6 +28,10 @@ jobs:
       - run: |
           cd flutterFlow/magnum
           sed -i 's|<base href="/">|<base href="/flutterflow/">|' web/index.html
+          sed -i 's|String _clientId = '${{ secrets.MAGNUM_CLIENT_ID }}';|String _clientId = '${{ secrets.TEST_CLIENT_ID }}';|' lib/app_state.dart
+          sed -i 's|String _clientId = '${{ secrets.MAGNUM_CLIENT_SECRET }}';|String _clientId = '${{ secrets.TEST_CLIENT_SECRET }}';|' lib/app_state.dart
+          sed -i 's|String _domain = 'magnum';|String _domain = 'test1';|' lib/app_state.dart
+          sed -i 's|String _webClientId = '298494298440138754';|String _webClientId = '298494298440138754';|' lib/app_state.dart
           flutter clean
           flutter pub get         
           flutter build web --release --web-renderer html
